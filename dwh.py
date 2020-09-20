@@ -142,6 +142,7 @@ while dwhCluster['ClusterAvailabilityStatus'] != 'Available':
     dwhCluster = redshift.describe_clusters(ClusterIdentifier=DWH_CLUSTER_IDENTIFIER)['Clusters'][0]
 print('Cluster is available')
 
+"""
 # allow access to security group
 ec2 = boto3.resource(
     'ec2',
@@ -162,11 +163,24 @@ try:
     )
 except Exception as e:
     print(e)
+"""
+
+"""
+# change cluster's security group
+#TODO
+try:
+    redshift.authorize_cluster_security_group_ingress(
+        ClusterSecutiryGroupName=,
+        EC2SecutiryGroupName=
+    )
+except Exception as e:
+    print(e)
+"""
 
 # save values to `dwh.cfg`
 config.read_file(open('dwh.cfg'))
 config.set('CLUSTER','HOST',dwhCluster['Endpoint']['Address'])
-config.set('CLUSTER','DB_NAME',DWH_DB_USER)
+config.set('CLUSTER','DB_NAME',DWH_DB)
 config.set('CLUSTER','DB_USER',DWH_DB_USER)
 config.set('CLUSTER','DB_PASSWORD',DWH_DB_PASSWORD)
 config.set('CLUSTER','DB_PORT',DWH_PORT)
