@@ -1,8 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""Loads the data from S3 to the staging tables, then inserts the data
-from the staging tables into the star schema tables.
+"""ETL pipeline for the Cloud Data Warehouse project for Udacity.
+
+This file loads data into the staging tables of the Redshift cluster,
+then inserts the data into the analytics tables for later analysis.
+
+Usage example:
+  $ python etl.py
+
 """
+
 import configparser
 import psycopg2
 from sql_queries import copy_table_queries, insert_table_queries

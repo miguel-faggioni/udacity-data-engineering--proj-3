@@ -1,11 +1,24 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""Code to create the necessary resources for the ETL to run if don't exist.
+"""Code to create the necessary resources for the ETL pipeline to run if
+it doesn't exist yet, and saves the information necessary on the `dwh.cfg`
+file. 
 
-This file creates:
+If all the necessary resources already exist, it will only save the cluster
+endpoint and ARN of the IAM role to the `dwh.cfg` file.
 
-  - IAM role with S3 access
-  - Redshift cluster
+This file will:
+
+  - check if the IAM role with S3 access exists and create it and/or
+     attach the necessary permissions if it doesn't
+  - create the Redshift cluster according to the `dwh.cfg` configurations
+     if it doesn't exist
+  - wait for the cluster to be available, before saving the information 
+     necessary to access it to `dwh.cfg` for the ETL pipeline to use
+
+Usage example:
+  $ python dwh.py
+
 """
 
 import pandas as pd
@@ -142,7 +155,6 @@ while dwhCluster['ClusterAvailabilityStatus'] != 'Available':
     dwhCluster = redshift.describe_clusters(ClusterIdentifier=DWH_CLUSTER_IDENTIFIER)['Clusters'][0]
 print('Cluster is available')
 
-"""
 # allow access to security group
 ec2 = boto3.resource(
     'ec2',
@@ -163,19 +175,6 @@ try:
     )
 except Exception as e:
     print(e)
-"""
-
-"""
-# change cluster's security group
-#TODO
-try:
-    redshift.authorize_cluster_security_group_ingress(
-        ClusterSecutiryGroupName=,
-        EC2SecutiryGroupName=
-    )
-except Exception as e:
-    print(e)
-"""
 
 # save values to `dwh.cfg`
 config.read_file(open('dwh.cfg'))

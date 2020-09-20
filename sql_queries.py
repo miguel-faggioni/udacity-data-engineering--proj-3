@@ -122,6 +122,7 @@ diststyle all
 
 # STAGING TABLES
 
+# takes ~59s to run
 staging_events_copy = ("""
 COPY staging_log_data 
 (user_id, ts, artist_name, first_name, last_name, gender, duration, song_name, level, session_id, location, user_agent)
@@ -137,6 +138,7 @@ TIMEFORMAT 'epochmillisecs'
     config.get('S3','staging_log_data_jsonpath')
 )
 
+# took ~2h to fail
 staging_songs_copy = ("""
 COPY staging_song_data
 (song_id, artist_id, latitude, longitude, location, title, year, duration, artist_name)

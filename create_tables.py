@@ -1,8 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""Drops all tables then recreates them to make sure the ETL
-has a fresh start for testing.
+"""This file drops all tables then recreates them to give the ETL
+a fresh start for testing.
+
+Usage example:
+  $ python create_tables.py
+
 """
+
 import configparser
 import psycopg2
 from sql_queries import create_table_queries, drop_table_queries
