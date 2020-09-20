@@ -16,9 +16,9 @@ from botocore.exceptions import ClientError
 import time
 import psycopg2
 
-# open the `dwh.secret.cfg` file
+# open the `dwh.cfg` file
 config = configparser.ConfigParser()
-config.read_file(open('dwh.secret.cfg'))
+config.read_file(open('dwh.cfg'))
 
 # load the file content into variables for later usage
 KEY                    = config.get('AWS','KEY')
@@ -142,12 +142,6 @@ while dwhCluster['ClusterAvailabilityStatus'] != 'Available':
     dwhCluster = redshift.describe_clusters(ClusterIdentifier=DWH_CLUSTER_IDENTIFIER)['Clusters'][0]
 print('Cluster is available')
 
-# get the information of the DWH
-DWH_ENDPOINT = dwhCluster['Endpoint']['Address']
-DWH_ROLE_ARN = dwhCluster['IamRoles'][0]['IamRoleArn']
-print("DWH_ENDPOINT :: ", {'Address': 'dwhcluster.cm8ea0dis6dd.us-west-2.redshift.amazonaws.com', 'Port': 5439})
-print("DWH_ROLE_ARN :: ", 'arn:aws:iam::235044904284:role/myRedshiftRole')
-
 # allow access to security group
 ec2 = boto3.resource(
     'ec2',
@@ -168,3 +162,14 @@ try:
     )
 except Exception as e:
     print(e)
+
+# save values to `dwh.cfg`
+config.read_file(open('dwh.cfg'))
+config.set('CLUSTER','HOST',dwhCluster['Endpoint']['Address'])
+config.set('CLUSTER','DB_NAME',DWH_DB_USER)
+config.set('CLUSTER','DB_USER',DWH_DB_USER)
+config.set('CLUSTER','DB_PASSWORD',DWH_DB_PASSWORD)
+config.set('CLUSTER','DB_PORT',DWH_PORT)
+config.set('IAM_ROLE','ARN',dwhCluster['IamRoles'][0]['IamRoleArn'])
+with open('dwh.cfg','w') as configfile:
+    config.write(configfile)
