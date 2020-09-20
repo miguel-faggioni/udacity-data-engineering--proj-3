@@ -1,0 +1,4 @@
+* testar
+  1. trocar diststyle de `all` pra `key`
+  2. mover `distkey` de `song_id` pra `user_id`
+  3. adicionar coluna pra salvar se uma linha de staging_*_data já foi movida pras tables de analytics e verificar essa coluna antes de fazer os inserts
