@@ -1,18 +1,33 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""Drops all tables then recreates them to make sure the ETL
+has a fresh start for testing.
+"""
 import configparser
 import psycopg2
 from sql_queries import create_table_queries, drop_table_queries
 
-
 def drop_tables(cur, conn):
     for query in drop_table_queries:
-        cur.execute(query)
-        conn.commit()
-
+        try:
+            cur.execute(query)
+            conn.commit()
+            print('>>> Query successful: {}'.format(query))
+        except Exception as e:
+            print(e)
+            print('>>> Query failed: {}'.format(query))
+            return
 
 def create_tables(cur, conn):
     for query in create_table_queries:
-        cur.execute(query)
-        conn.commit()
+        try:
+            cur.execute(query)
+            conn.commit()
+            print('>>> Query successful: {}'.format(query))
+        except Exception as e:
+            print(e)
+            print('>>> Query failed: {}'.format(query))
+            return
 
 
 def main():
