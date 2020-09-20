@@ -33,6 +33,7 @@ CREATE TABLE IF NOT EXISTS staging_log_data (
     session_id   int          NOT NULL,
     location     text,
     user_agent   text,
+    page         text,
     migrated     boolean      DEFAULT false
 )
 ;
@@ -125,7 +126,7 @@ diststyle all
 # takes ~59s to run
 staging_events_copy = ("""
 COPY staging_log_data 
-(user_id, ts, artist_name, first_name, last_name, gender, duration, song_name, level, session_id, location, user_agent)
+(user_id, ts, artist_name, first_name, last_name, gender, duration, song_name, level, session_id, location, user_agent, page)
 FROM '{}'
 REGION 'us-west-2'
 CREDENTIALS 'aws_iam_role={}'
