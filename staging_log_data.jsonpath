@@ -1,0 +1,16 @@
+{
+    "jsonpaths": [
+        "$.userId",
+        "$.ts",
+        "$.artist",
+        "$.firstName",
+        "$.lastName",
+        "$.gender",
+        "$.length",
+        "$.song",
+        "$.level",
+        "$.sessionId",
+        "$.location",
+        "$.userAgent"
+    ]
+}
