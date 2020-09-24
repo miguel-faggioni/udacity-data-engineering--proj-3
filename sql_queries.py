@@ -195,6 +195,24 @@ END TRANSACTION;
 user_table_insert = ("""
 BEGIN TRANSACTION;
 
+UPDATE users 
+SET level = staging_log_data.level
+FROM staging_log_data 
+WHERE users.user_id = staging_log_data.user_id
+  AND staging_log_data.migrated_user = false
+  AND staging_log_data.page          = 'NextSong';
+
+UPDATE staging_log_data
+SET migrated_user = true
+FROM users
+WHERE staging_log_data.user_id       = users.user_id
+  AND staging_log_data.migrated_user = false
+  AND staging_log_data.page          = 'NextSong';
+
+END TRANSACTION;
+
+BEGIN TRANSACTION;
+
 INSERT INTO users (
   WITH unique_users AS (
           SELECT MAX(ts) AS ts, user_id
