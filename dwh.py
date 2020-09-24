@@ -47,7 +47,9 @@ DWH_DB_USER            = config.get("DWH","DWH_DB_USER")
 DWH_DB_PASSWORD        = config.get("DWH","DWH_DB_PASSWORD")
 DWH_PORT               = config.get("DWH","DWH_PORT")
 
-DWH_IAM_ROLE_NAME      = config.get("DWH", "DWH_IAM_ROLE_NAME")
+DWH_IAM_ROLE_NAME      = config.get("DWH","DWH_IAM_ROLE_NAME")
+
+DWH_SEC_GROUP_ID       = config.get("DWH","DWH_SEC_GROUP_ID")
 
 REGION                 = boto3.session.Session().region_name
 
@@ -60,6 +62,12 @@ iam = boto3.client(
 )
 redshift = boto3.client(
     'redshift',
+    region_name=REGION,
+    aws_access_key_id=KEY,
+    aws_secret_access_key=SECRET
+)
+ec2 = boto3.resource(
+    'ec2',
     region_name=REGION,
     aws_access_key_id=KEY,
     aws_secret_access_key=SECRET
@@ -123,7 +131,9 @@ else:
             MasterUsername=DWH_DB_USER,
             MasterUserPassword=DWH_DB_PASSWORD,
             #Roles (for s3 access)
-            IamRoles=[roleArn]  
+            IamRoles=[roleArn],
+            #security group
+            VpcSecurityGroupIds=[DWH_SEC_GROUP_ID]
         )
     except Exception as e:
         print(e)
@@ -156,12 +166,6 @@ while dwhCluster['ClusterAvailabilityStatus'] != 'Available':
 print('Cluster is available')
 
 # allow access to security group
-ec2 = boto3.resource(
-    'ec2',
-    region_name=REGION,
-    aws_access_key_id=KEY,
-    aws_secret_access_key=SECRET
-)
 try:
     vpc = ec2.Vpc(id=dwhCluster['VpcId'])
     defaultSg = list(vpc.security_groups.all())[0]
