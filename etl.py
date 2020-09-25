@@ -5,6 +5,8 @@
 This file loads data into the staging tables of the Redshift cluster,
 then inserts the data into the analytics tables for later analysis.
 
+Lastly this file clears the staging tables to avoid unnecessary bloat on the cluster.
+
 Usage example:
   $ python etl.py
 
@@ -12,7 +14,7 @@ Usage example:
 
 import configparser
 import psycopg2
-from sql_queries import copy_table_queries, insert_table_queries
+from sql_queries import copy_table_queries, insert_table_queries, clear_staging_table_queries
 
 
 def load_staging_tables(cur, conn):
@@ -38,6 +40,18 @@ def insert_tables(cur, conn):
             print('>>> Query failed: {}'.format(query))
             return
 
+        
+def clear_staging_tables(cur, conn):
+    for query in clear_staging_table_queries:
+        try:
+            cur.execute(query)
+            conn.commit()
+            print('>>> Query successful: {}'.format(query))
+        except Exception as e:
+            print(e)
+            print('>>> Query failed: {}'.format(query))
+            return
+
 
 def main():
     config = configparser.ConfigParser()
@@ -48,7 +62,8 @@ def main():
     
     load_staging_tables(cur, conn)
     insert_tables(cur, conn)
-
+    clear_staging_tables(cur, conn)
+    
     conn.close()
 
 

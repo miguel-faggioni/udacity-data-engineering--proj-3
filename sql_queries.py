@@ -298,6 +298,17 @@ WHERE staging_log_data.ts            = time.start_time
 END TRANSACTION;
 """)
 
+# CLEARING THE STAGING TABLES
+
+staging_events_clear = ("""
+TRUNCATE staging_log_data;
+""")
+
+staging_songs_clear = ("""
+TRUNCATE staging_songs_data;
+""")
+
+
 # QUERY LISTS
 
 create_table_queries = [
@@ -328,4 +339,8 @@ insert_table_queries = [
     artist_table_insert,
     time_table_insert,
     songplay_table_insert
+]
+clear_staging_table_queries = [
+    staging_events_clear,
+    staging_songs_clear
 ]

@@ -99,9 +99,9 @@ staging_log_data_jsonpath = <S3 path to the jsonpath that will help transform th
 staging_song_data_jsonpath = <S3 path to the jsonpath that will help transform the song_data into the columns of its staging table>
    #+END_SRC
 
-   After connecting to the Redshift cluster, the code loads the data from the S3 buckets into the two staging tables, then it runs queries to transform the data in the staging tables and load them into the analytics tables.
+   The code loads the data from the S3 buckets into the two staging tables, then it runs queries to transform the data in the staging tables and load them into the analytics tables.
 
-   Since loading the entirety of the song_data archive was causing the request to timeout, the pipeline iterates over the first 2 layers of folders and inserts them into the song staging table.
+   After loading all the data into the correct tables, the code clears the staging tables, in order to avoid wasting space on information that is no longer necessary.
 
 * Distribution style
 

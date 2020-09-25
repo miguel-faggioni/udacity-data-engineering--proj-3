@@ -1,18 +1,18 @@
-- [Data Warehouse - Udacity](#org85c6552)
-  - [Introduction](#orgfd42599)
-  - [Project description](#orgaa072b0)
-- [Folder structure](#org5cee365)
-- [Usage](#org805312e)
-  - [Creating the AWS resources](#org6a75e1e)
-  - [Creating the tables](#org32554d3)
-  - [Running the pipeline](#org2d88e97)
-- [Distribution style](#org0a510db)
-- [Example queries for analysis](#orgb4591c9)
-  - [Most popular songs played](#org7c3651c)
-  - [Most popular artists in a given year](#orgd9297d8)
+- [Data Warehouse - Udacity](#org2b16981)
+  - [Introduction](#orgd025bdb)
+  - [Project description](#orge03533f)
+- [Folder structure](#orga34211a)
+- [Usage](#org1cc1e64)
+  - [Creating the AWS resources](#orgedc57f0)
+  - [Creating the tables](#orgc082beb)
+  - [Running the pipeline](#orgf44800d)
+- [Distribution style](#org84fba9f)
+- [Example queries for analysis](#org2715b07)
+  - [Most popular songs played](#orgee7655c)
+  - [Most popular artists in a given year](#orge328272)
 
 
-<a id="org85c6552"></a>
+<a id="org2b16981"></a>
 
 # Data Warehouse - Udacity
 
@@ -21,7 +21,7 @@ This repository is intended for the the third project of the Udacity Data Engine
 The Introduction and project description were taken from the Udacity curriculum, since they summarize the activity better than I could.
 
 
-<a id="orgfd42599"></a>
+<a id="orgd025bdb"></a>
 
 ## Introduction
 
@@ -30,14 +30,14 @@ A music streaming startup, Sparkify, has grown their user base and song database
 As their data engineer, you are tasked with building an ETL pipeline that extracts their data from S3, stages them in Redshift, and transforms data into a set of dimensional tables for their analytics team to continue finding insights in what songs their users are listening to. You'll be able to test your database and ETL pipeline by running queries given to you by the analytics team from Sparkify and compare your results with their expected results.
 
 
-<a id="orgaa072b0"></a>
+<a id="orge03533f"></a>
 
 ## Project description
 
 In this project, you'll apply what you've learned on data warehouses and AWS to build an ETL pipeline for a database hosted on Redshift. To complete the project, you will need to load data from S3 to staging tables on Redshift and execute SQL statements that create the analytics tables from these staging tables.
 
 
-<a id="org5cee365"></a>
+<a id="orga34211a"></a>
 
 # Folder structure
 
@@ -58,12 +58,12 @@ In this project, you'll apply what you've learned on data warehouses and AWS to 
 ```
 
 
-<a id="org805312e"></a>
+<a id="org1cc1e64"></a>
 
 # Usage
 
 
-<a id="org6a75e1e"></a>
+<a id="orgedc57f0"></a>
 
 ## Creating the AWS resources
 
@@ -96,7 +96,7 @@ dwh_sec_group_id = <id of the security group to attach to the cluster>
 When it is run, it checks first to see if the resources are already created, so as not to create unnecessary resources and expences. After it is run, it saves some information on `dwh.cfg` that will be used by `etl.py` and `create_tables.py` to access these resources, such the information necessary to access the Redshift cluster.
 
 
-<a id="org32554d3"></a>
+<a id="orgc082beb"></a>
 
 ## Creating the tables
 
@@ -109,7 +109,7 @@ python create_tables.py
 It uses the information on `dwh.cfg` filled by `dwh.py` and uses it to connect to the Redshift cluster, then it drops all the tables and recreates them using the queries on `sql_queries.py`
 
 
-<a id="org2d88e97"></a>
+<a id="orgf44800d"></a>
 
 ## Running the pipeline
 
@@ -136,24 +136,24 @@ staging_log_data_jsonpath = <S3 path to the jsonpath that will help transform th
 staging_song_data_jsonpath = <S3 path to the jsonpath that will help transform the song_data into the columns of its staging table>
 ```
 
-After connecting to the Redshift cluster, the code loads the data from the S3 buckets into the two staging tables, then it runs queries to transform the data in the staging tables and load them into the analytics tables.
+The code loads the data from the S3 buckets into the two staging tables, then it runs queries to transform the data in the staging tables and load them into the analytics tables.
 
-Since loading the entirety of the song<sub>data</sub> archive was causing the request to timeout, the pipeline iterates over the first 2 layers of folders and inserts them into the song staging table.
+After loading all the data into the correct tables, the code clears the staging tables, in order to avoid wasting space on information that is no longer necessary.
 
 
-<a id="org0a510db"></a>
+<a id="org84fba9f"></a>
 
 # Distribution style
 
 Since all the tables have relatively few rows, the tables were replicated on all slices, in order the improve join times.
 
 
-<a id="orgb4591c9"></a>
+<a id="org2715b07"></a>
 
 # Example queries for analysis
 
 
-<a id="org7c3651c"></a>
+<a id="orgee7655c"></a>
 
 ## Most popular songs played
 
@@ -169,7 +169,7 @@ LIMIT 10;
 ```
 
 
-<a id="orgd9297d8"></a>
+<a id="orge328272"></a>
 
 ## Most popular artists in a given year
 
